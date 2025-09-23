@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Admin" ADD COLUMN     "address" TEXT,
+ALTER COLUMN "lastName" DROP NOT NULL,
+ALTER COLUMN "lastName" DROP DEFAULT,
+ALTER COLUMN "contact" DROP DEFAULT;

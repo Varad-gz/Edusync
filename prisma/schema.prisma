@@ -1,0 +1,120 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  firstName    String
+  middleName   String?
+  lastName     String?
+  address      String?
+  contact      String?
+  email        String   @unique
+  password     String?
+  googleAuthId String?  @unique
+  credit       Float    @default(10000.0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  Instructor Instructor[]
+  Student    Student[]
+}
+
+model Student {
+  id         Int      @id @default(autoincrement())
+  firstName  String
+  middleName String
+  lastName   String
+  address    String
+  contact    String
+  email      String   @unique
+  password   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  enrollments Enrollment[]
+  attendance  Attendance[]
+
+  adminId Int
+  admin   Admin @relation(fields: [adminId], references: [id])
+}
+
+model Instructor {
+  id         Int      @id @default(autoincrement())
+  firstName  String
+  middleName String
+  lastName   String
+  address    String
+  contact    String
+  email      String   @unique
+  password   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  courses Course[]
+
+  adminId Int
+  admin   Admin @relation(fields: [adminId], references: [id])
+}
+
+model Program {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  courses  Course[]
+  students Enrollment[]
+}
+
+model Course {
+  id           Int      @id @default(autoincrement())
+  name         String
+  description  String?
+  programId    Int
+  instructorId Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  program    Program      @relation(fields: [programId], references: [id])
+  instructor Instructor   @relation(fields: [instructorId], references: [id])
+  attendance Attendance[]
+}
+
+model Enrollment {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  programId Int
+  createdAt DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id])
+  program Program @relation(fields: [programId], references: [id])
+
+  @@unique([studentId, programId])
+}
+
+model Attendance {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @unique @default(now())
+  isPresent Boolean  @default(false)
+  startTime String   @unique
+  endTime   String   @unique
+  day       String
+  studentId Int      @unique
+  courseId  Int      @unique
+
+  student Student @relation(fields: [studentId], references: [id])
+  course  Course  @relation(fields: [courseId], references: [id])
+}

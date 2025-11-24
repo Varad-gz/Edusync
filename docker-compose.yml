@@ -15,7 +15,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   migrate:
-    build: .
+    image: ${REGISTRY_HOST}/edusync/migrate:v1
     container_name: edusync-migrate
     working_dir: /app
     env_file:
@@ -28,7 +28,7 @@ services:
     command: npx prisma migrate deploy
 
   web:
-    build: .
+    image: ${REGISTRY_HOST}/edusync/client:v1
     container_name: edusync-client
     ports:
       - "3000:3000"

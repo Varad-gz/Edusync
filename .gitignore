@@ -14,8 +14,7 @@ build/
 
 # Env files
 .env
-.env.*        # Covers .env.local, .env.development, etc.
-!.env.example # Keep example env if you use one
+.env.local
 
 # Prisma
 prisma/dev.db
@@ -54,3 +53,6 @@ Thumbs.db
 *.tgz
 *.gz
 *.zip
+
+sonar-project.properties
+.scannerwork/

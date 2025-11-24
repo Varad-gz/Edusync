@@ -8,15 +8,6 @@ import { getServerSession } from "next-auth";
 export async function POST(req) {
     try {
 
-        const session = await getServerSession(authConfig);
-
-        if (!session) {
-            return new Response(
-                JSON.stringify({ error: "Unauthorized" }),
-                { status: 401 }
-            );
-        }
-
         const { fname, mname, lname, email, password, contact, address, rpassword } = await req.json()
 
         if (!fname || !lname || !email || !password) {
